@@ -1,0 +1,101 @@
+# -*-shell-script-*-
+
+set -u
+set -e
+
+find_java() {
+    set +u
+    java_version=${java_java_version-"1.6"}
+    set -u
+    case "$java_version" in
+        "1.6") echo "/opt/java6/bin/java";;
+        "1.7") echo "/opt/java7/bin/java";;
+        "1.8") echo "/opt/java8/jre/bin/java";;
+    "system") which java;;
+        *)
+        echo "Unsupported java version $java_version" 1>&2
+        exit 1
+        ;;
+    esac
+}
+
+java=$(find_java)
+echo "Using JVM at $java"
+
+install_app() {
+    echo "Copying application files to $app_dir/app"
+    mkdir $app_dir/app
+    cp -a $pkg_dir/* $app_dir/app
+    chmod g+w -R $app_dir/app
+}
+
+create_app_skel() {
+    echo "Creating application skeleton at $app_dir"
+    chmod 770 $app_dir
+    mkdir -m 770 $app_dir/tmp
+    mkdir -m 770 $app_dir/log
+    ln -s $log_dir/current $app_dir/log/current
+}
+
+escape_quotes() {
+    echo $1 | sed 's/"/\\"/g'
+}
+
+java_args() {
+    set +u
+    escaped=$(escape_quotes "$java_args")
+    set -u
+    echo "\"$escaped\""
+}
+
+write_config() {
+    config="$control_dir/config"
+    echo "Writing configuration to $config"
+    args=$(java_args)
+    resolved_args=$(eval "echo $args")
+    escaped_resolved_args=$(escape_quotes "$resolved_args")
+    echo "working=$app_dir/app"
+    echo "port=$app_port" >> $config
+    echo "java=$java" >> $config
+    echo "tmp_dir=$app_dir/tmp" >> $config
+    echo "args=\"$escaped_resolved_args\"" >> $config
+}
+
+java_opts() {
+    set +u
+    escaped=$(escape_quotes "$java_opts")
+    set -u
+    echo "\"$escaped\""
+}
+
+write_core_opts() {
+    config="$control_dir/java-opts-10-core"
+    echo "Writing java options to $config"
+    opts=$(java_opts)
+    resolved_opts=$(eval "echo $opts")
+    echo "$resolved_opts" > $config
+}
+
+write_env_opts() {
+    config="$control_dir/java-opts-15-env"
+    echo "Writing env to $config"
+    for env_name in `env | grep '^env_' | cut -d= -f1`; do
+        echo_val="echo \$$env_name";
+        opt_name=${env_name:4}
+        val="$(eval $echo_val)"
+        escaped_val=$(escape_quotes "$val")
+        echo -n "-D$opt_name=\"$escaped_val\" " >> $config
+    done
+}
+
+write_control() {
+    echo "Writing control scripts to $control_dir"
+    install -m 550 $plugin_dir/control/start $control_dir
+}
+
+create_app_skel
+install_app
+write_config
+write_core_opts
+write_env_opts
+write_control
