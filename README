@@ -1,5 +1,0 @@
-A few notes:
-
-To deploy with this clickstack, you need a play2 app, and need to run 
-"play stage" before deployment. After that, zip the contents of your 
-working directory, deploy it, and you're done!
