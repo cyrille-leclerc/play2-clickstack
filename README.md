@@ -40,7 +40,7 @@ so this is just an example of how it will be done in the future. Stay
 tuned!):
 
     play stage
-    zip MYAPP.zip .
-    bees app:deploy -t play2 -a APP_NAME MYAPP.zip
+    zip ../MYAPP.zip .
+    bees app:deploy -t play2 -a APP_NAME ../MYAPP.zip
 
 And your app is now running on the cloud! 
