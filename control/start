@@ -2,7 +2,7 @@
 set -e
 set -u
 
-control_dir="$(dirname $PWD/$0)"
+control_dir="$(dirname $0)"
 . $control_dir/config
 
 cmd="$java -Djava.io.tmpdir=\"$tmp_dir\" -Dapp.port=$port -Dhttp.port=$port"
