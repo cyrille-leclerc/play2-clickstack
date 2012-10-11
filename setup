@@ -5,7 +5,7 @@ set -e
 
 find_java() {
     set +u
-    java_version=${java_java_version-"1.6"}
+    java_version=${play2_java_version-"1.6"}
     set -u
     case "$java_version" in
         "1.6") echo "/opt/java6/bin/java";;
