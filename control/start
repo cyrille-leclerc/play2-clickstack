@@ -6,16 +6,16 @@ control_dir="$(dirname $0)"
 . $control_dir/config
 
 cmd="$java -Djava.io.tmpdir=\"$tmp_dir\" -Dapp.port=$port -Dhttp.port=$port"
-for file in `ls $control_dir/java-opts-* | sort`; do
+for file in `ls $control_dir/play2-opts-* | sort`; do
     cmd="$cmd `cat $file`"
 done
 
 if [ -e "$working/target/start" ]
 then
-    cmd="$cmd -cp \"$working/target/staged/*\" play.core.server.NettyServer $working $args"
+    cmd="$cmd -cp \"$working/target/staged/*\" play.core.server.NettyServer $working"
 else
     cd $working/*
-    cmd="$cmd -cp \"lib/*\" play.core.server.NettyServer . $args"
+    cmd="$cmd -cp \"lib/*\" play.core.server.NettyServer ."
 fi
 
 exec bash -c "$cmd"

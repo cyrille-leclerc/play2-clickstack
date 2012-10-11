@@ -41,43 +41,33 @@ escape_quotes() {
     echo $1 | sed 's/"/\\"/g'
 }
 
-java_args() {
-    set +u
-    escaped=$(escape_quotes "$java_args")
-    set -u
-    echo "\"$escaped\""
-}
 
 write_config() {
     config="$control_dir/config"
     echo "Writing configuration to $config"
-    args=$(java_args)
-    resolved_args=$(eval "echo $args")
-    escaped_resolved_args=$(escape_quotes "$resolved_args")
     echo "working=$app_dir/app" >> $config
     echo "port=$app_port" >> $config
     echo "java=$java" >> $config
     echo "tmp_dir=$app_dir/tmp" >> $config
-    echo "args=\"$escaped_resolved_args\"" >> $config
 }
 
-java_opts() {
+play2_opts() {
     set +u
-    escaped=$(escape_quotes "$java_opts")
+    escaped=$(escape_quotes "$play2_opts")
     set -u
     echo "\"$escaped\""
 }
 
 write_core_opts() {
-    config="$control_dir/java-opts-10-core"
-    echo "Writing java options to $config"
-    opts=$(java_opts)
+    config="$control_dir/play2-opts-10-core"
+    echo "Writing play2 options to $config"
+    opts=$(play2_opts)
     resolved_opts=$(eval "echo $opts")
     echo "$resolved_opts" > $config
 }
 
 write_env_opts() {
-    config="$control_dir/java-opts-15-env"
+    config="$control_dir/play2-opts-15-env"
     echo "Writing env to $config"
     for env_name in `env | grep '^env_' | cut -d= -f1`; do
         echo_val="echo \$$env_name";
