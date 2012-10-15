@@ -1,9 +1,5 @@
 # Play 2 ClickStack
 
-You may execute the following steps with either play (If you have the 
-Play! Framework installed) or sbt, but we'll be showcasing play in the 
-following examples.
-
 ## Creating an app and database
 
 For this to work, you will need to have the CloudBees SDK installed. 
