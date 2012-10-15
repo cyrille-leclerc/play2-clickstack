@@ -31,9 +31,7 @@ appDependencies in project/Build.scala to:
 ## Building and deploying your Play 2 application
 
 You're almost done! Now, in your Play 2 project directory, execute the 
-following (Please note the app:deploy for play2 isn't available yet, 
-so this is just an example of how it will be done in the future. Stay 
-tuned!):
+following:
 
     play stage
     zip ../MYAPP.zip .
