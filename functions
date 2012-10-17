@@ -14,30 +14,58 @@ install_app() {
     echo "Copying application files to $app_dir/app"
     mkdir $app_dir/app
     if [ -e "$pkg_dir/app.war" ]; then
-      # HACK required for deployments via Jenkins CB Deployer
-      echo "unzipping war"
+      echo "WAR detected - using contents instead (CB legacy support)"
       unzip $pkg_dir/app.war -d $app_dir/app
     elif [ -e "$pkg_dir/app.ear" ]; then
-      # HACK required for deployments via SDK
-      echo "unzipping ear"
+      echo "EAR detected - using contents instead (CB legacy support)"
       unzip $pkg_dir/app.ear -d $app_dir/app
     else
-      echo "unzipping zip"
       cp -a $pkg_dir/* $app_dir/app
     fi
-
     chmod -R g+w $app_dir/app
+}
+
+app_type() {
+    if [ -e "app_dir/app/target/start" ]; then
+	echo "stage"
+    else
+	echo "dist"
+    fi
+}
+
+dist_working_dir() {
+    dir=`find $app_dir/app/* -type d -maxdepth 0`
+    if [ `echo "$dir" | wc -l` = "1" ]; then
+	echo "$dir"
+    else
+	echo "Invalid play dist - unexpected dir count in $app_dir/app" >&2
+	exit 1
+    fi
 }
 
 write_config() {
     config="$control_dir/config"
     echo "Writing configuration to $config"
+
     java=$(find_java)
     echo "Using JVM at $java"
+
+    if [ app_type == "stage" ]; then
+	working_dir="$app_dir/app"
+	classpath="$working_dir/target/staged/*"
+    else
+	working_dir=$(dist_working_dir)
+	classpath="$working_dir/lib/*"
+    fi
+    echo "Working dir is $working_dir"
+    echo "Classpath is $classpath"
+
     echo "working=$app_dir/app" >> $config
     echo "port=$app_port" >> $config
     echo "java=$java" >> $config
     echo "tmp_dir=$app_dir/tmp" >> $config
+    echo "working_dir=$working_dir" >> $config
+    echo "classpath=$classpath" >> $config
 }
 
 write_control() {

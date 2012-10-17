@@ -5,17 +5,20 @@ set -u
 control_dir="$(dirname $0)"
 . $control_dir/config
 
-cmd="$java -Djava.io.tmpdir=\"$tmp_dir\" -Dapp.port=$port -Dhttp.port=$port"
+jvm_opts=""
 for file in `ls $control_dir/jvm-opts-* | sort`; do
-    cmd="$cmd `cat $file`"
+    jvm_opts="$jvm_opts `cat $file`"
 done
 
-if [ -e "$working/target/start" ]
-then
-    cmd="$cmd -cp \"$working/target/staged/*\" play.core.server.NettyServer $working"
-else
-    cd $working/*
-    cmd="$cmd -cp \"lib/*\" play.core.server.NettyServer ."
-fi
+cd $working_dir
 
-exec bash -c "$cmd"
+exec bash -c "
+$java \
+    -Djava.io.tmpdir=$tmp_dir \
+    -Dapp.port=$port \
+    -Dhttp.port=$port \
+    $jvm_opts \
+    -cp \"$classpath\" \
+    play.core.server.NettyServer \
+    $working_dir
+"
