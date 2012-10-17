@@ -13,8 +13,20 @@ create_app_skel() {
 install_app() {
     echo "Copying application files to $app_dir/app"
     mkdir $app_dir/app
-    cp -a $pkg_dir/* $app_dir/app
-    chmod g+w -R $app_dir/app
+    if [ -e "$pkg_dir/app.war" ]; then
+      # HACK required for deployments via Jenkins CB Deployer
+      echo "unzipping war"
+      unzip $pkg_dir/app.war -d $app_dir/app
+    elif [ -e "$pkg_dir/app.ear" ]; then
+      # HACK required for deployments via SDK
+      echo "unzipping ear"
+      unzip $pkg_dir/app.ear -d $app_dir/app
+    else
+      echo "unzipping zip"
+      cp -a $pkg_dir/* $app_dir/app
+    fi
+
+    chmod -R g+w $app_dir/app
 }
 
 write_config() {

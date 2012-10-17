@@ -6,7 +6,7 @@ plugin_name = play2-plugin
 compile:
 	mkdir -p $(build_dir)
 	chmod 755 setup
-	zip -r $(build_dir)/$(plugin_name).zip setup control/*
+	zip -r $(build_dir)/$(plugin_name).zip setup control functions java
 
 package: compile
 
