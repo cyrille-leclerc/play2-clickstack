@@ -1,0 +1,34 @@
+# -*-shell-script-*-
+
+. "$plugin_dir/java/functions"
+
+create_app_skel() {
+    echo "Creating application skeleton at $app_dir"
+    chmod 770 $app_dir
+    mkdir -m 770 $app_dir/tmp
+    mkdir -m 770 $app_dir/log
+    ln -s $log_dir/current $app_dir/log/current
+}
+
+install_app() {
+    echo "Copying application files to $app_dir/app"
+    mkdir $app_dir/app
+    cp -a $pkg_dir/* $app_dir/app
+    chmod g+w -R $app_dir/app
+}
+
+write_config() {
+    config="$control_dir/config"
+    echo "Writing configuration to $config"
+    java=$(find_java)
+    echo "Using JVM at $java"
+    echo "working=$app_dir/app" >> $config
+    echo "port=$app_port" >> $config
+    echo "java=$java" >> $config
+    echo "tmp_dir=$app_dir/tmp" >> $config
+}
+
+write_control() {
+    echo "Writing control scripts to $control_dir"
+    install -m 550 $plugin_dir/control/start $control_dir
+}
