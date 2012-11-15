@@ -5,7 +5,7 @@ publish_url = s3://$(publish_bucket)/$(publish_repo)/
 
 deps = java
 
-pkg_files = README LICENSE setup functions control java
+pkg_files = LICENSE setup functions control java
 
 include plugin.mk
 
