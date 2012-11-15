@@ -1,16 +1,17 @@
-#! /bin/bash
-build_dir = ./build
 plugin_name = play2-plugin
+publish_bucket = cloudbees-clickstack
+publish_repo = testing
+publish_url = s3://$(publish_bucket)/$(publish_repo)/
 
+deps = java
 
-compile:
-	mkdir -p $(build_dir)
-	chmod 755 setup
-	zip -r $(build_dir)/$(plugin_name).zip setup control functions java
+pkg_files = README LICENSE setup functions control java
 
-package: compile
+include plugin.mk
 
-clean:
-	rm -rf $(build_dir)
+java_plugin_gitrepo = git://github.com/CloudBees-community/java-clickstack.git
 
-clean-all: clean
+java:
+	git clone $(java_plugin_gitrepo) java
+	rm -rf java/.git
+	cd java; make clean; make deps

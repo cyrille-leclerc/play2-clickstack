@@ -1,6 +1,6 @@
 # -*-shell-script-*-
 
-. "$plugin_dir/java/functions"
+. "$genapp_functions/core"
 
 create_app_skel() {
     echo "Creating application skeleton at $app_dir"
@@ -34,9 +34,9 @@ app_type() {
 }
 
 dist_working_dir() {
-    dir=`find $app_dir/app/* -type d -maxdepth 0`
-    if [ `echo "$dir" | wc -l` = "1" ]; then
-	echo "$dir"
+    _dir=`find $app_dir/app/* -type d -maxdepth 0`
+    if [ `echo "$_dir" | wc -l` = "1" ]; then
+	echo "$_dir"
     else
 	echo "Invalid play dist - unexpected dir count in $app_dir/app" >&2
 	exit 1
@@ -44,8 +44,8 @@ dist_working_dir() {
 }
 
 write_config() {
-    config="$control_dir/config"
-    echo "Writing configuration to $config"
+    _config="$control_dir/_config"
+    echo "Writing configuration to $_config"
 
     java=$(find_java)
     echo "Using JVM at $java"
@@ -60,12 +60,12 @@ write_config() {
     echo "Working dir is $working_dir"
     echo "Classpath is $classpath"
 
-    echo "working=$app_dir/app" >> $config
-    echo "port=$app_port" >> $config
-    echo "java=$java" >> $config
-    echo "tmp_dir=$app_dir/tmp" >> $config
-    echo "working_dir=$working_dir" >> $config
-    echo "classpath=$classpath" >> $config
+    echo "working=$app_dir/app" >> $_config
+    echo "port=$app_port" >> $_config
+    echo "java=$java" >> $_config
+    echo "tmp_dir=$app_dir/tmp" >> $_config
+    echo "working_dir=$working_dir" >> $_config
+    echo "classpath=$classpath" >> $_config
 }
 
 write_control() {

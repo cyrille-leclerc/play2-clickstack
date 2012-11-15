@@ -7,7 +7,8 @@ set -e
 
 create_app_skel
 install_app
+install_java_agent
+install_java_control_functions
 write_config
-write_jvm_opts
-write_system_props
+write_java_opts
 write_control
