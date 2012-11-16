@@ -1,6 +1,7 @@
 # -*-shell-script-*-
 
 . "$genapp_functions/core"
+. "$plugin_dir/java/functions"
 
 create_app_skel() {
     echo "Creating application skeleton at $app_dir"
@@ -34,7 +35,7 @@ app_type() {
 }
 
 dist_working_dir() {
-    _dir=`find $app_dir/app/* -type d -maxdepth 0`
+    _dir=`find $app_dir/app/* -type d -maxdepth 0 | grep -v META-INF`
     if [ `echo "$_dir" | wc -l` = "1" ]; then
 	echo "$_dir"
     else
@@ -44,7 +45,7 @@ dist_working_dir() {
 }
 
 write_config() {
-    _config="$control_dir/_config"
+    _config="$control_dir/config"
     echo "Writing configuration to $_config"
 
     java=$(find_java)
