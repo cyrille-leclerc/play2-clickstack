@@ -15,9 +15,9 @@ You will need to change your database configuration in
 conf/application.conf to the following:
 
     db.default.driver=com.mysql.jdbc.Driver
-    db.default.url="jdbc:"${mysql_url_ALIAS}
-    db.default.user=${mysql_username_ALIAS}
-    db.default.password=${mysql_password_ALIAS}
+    db.default.url="jdbc:${DATABASE_URL_DB}"
+    db.default.user=${DATABASE_USERNAME_DB}
+    db.default.password=${DATABASE_PASSWORD_DB}
 
 We also need to get the MySQL driver. To do this, we change our 
 appDependencies in project/Build.scala to:
