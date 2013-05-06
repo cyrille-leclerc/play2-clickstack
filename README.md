@@ -9,15 +9,20 @@ Here, we simply create a new application and database on CloudBees.
     bees db:create DB_NAME
     bees app:bind -a APP_NAME -db DB_NAME -as ALIAS
 
+(if you don't want a DB, skip the last 2 lines of course!)
+
 ## Preparing your play 2 project
 
-You will need to change your database configuration in 
+If you are using CloudBees DBs, you will need to change your database configuration in 
 conf/application.conf to the following:
 
     db.default.driver=com.mysql.jdbc.Driver
+    DATABASE_USERNAME_DB=na
+    DATBASE_PASSWORD_DB=na
+    DATABASE_URL_DB=na
     db.default.url="jdbc:${DATABASE_URL_DB}"
     db.default.user=${DATABASE_USERNAME_DB}
-    db.default.password=${DATABASE_PASSWORD_DB}
+    db.default.password=${DATBASE_PASSWORD_DB}
 
 We also need to get the MySQL driver. To do this, we change our 
 appDependencies in project/Build.scala to:
