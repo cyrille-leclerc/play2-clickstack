@@ -13,24 +13,28 @@ Here, we simply create a new application and database on CloudBees.
 
 ## Preparing your play 2 project
 
-If you are using CloudBees DBs, you will need to change your database configuration in 
-conf/application.conf to the following:
+If you are using CloudBees DBs, you will need to change your database 
+configuration in conf/application.conf to the following:
 
     db.default.driver=com.mysql.jdbc.Driver
     DATABASE_USERNAME_DB=na
     DATBASE_PASSWORD_DB=na
     DATABASE_URL_DB=na
-    db.default.url="jdbc:${DATABASE_URL_DB}"
+    db.default.url="jdbc:"${DATABASE_URL_DB}
     db.default.user=${DATABASE_USERNAME_DB}
-    db.default.password=${DATBASE_PASSWORD_DB}
+    db.default.password=${DATABASE_PASSWORD_DB}
 
-The extra entries are needed so that the variables can be set via System properties (the "na" will be replaced by the real thing when it runs).
+The extra entries are needed so that the variables can be set via System 
+properties (the "na" will be replaced by the real thing when it runs).
+
+The quotes must englobe "jdbc:" and not the variable substitution part 
+(Or otherwise it won't be substituted.)
 
 We also need to get the MySQL driver. To do this, we change our 
 appDependencies in project/Build.scala to:
 
     val appDependencies = Seq(
-    	"mysql" % "mysql-connector-java" % "5.1.18"
+    	"mysql" % "mysql-connector-java" % "5.1.21"
     // And then your other dependencies, if you have any...
     )
 
