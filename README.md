@@ -24,6 +24,8 @@ conf/application.conf to the following:
     db.default.user=${DATABASE_USERNAME_DB}
     db.default.password=${DATBASE_PASSWORD_DB}
 
+The extra entries are needed so that the variables can be set via System properties (the "na" will be replaced by the real thing when it runs).
+
 We also need to get the MySQL driver. To do this, we change our 
 appDependencies in project/Build.scala to:
 
