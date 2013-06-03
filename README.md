@@ -7,7 +7,9 @@ Here, we simply create a new application and database on CloudBees.
 
     bees app:create APP_NAME
     bees db:create DB_NAME
-    bees app:bind -a APP_NAME -db DB_NAME -as ALIAS
+    bees app:bind -a APP_NAME -db DB_NAME -as MYDB
+
+Where `MYDB` is the name of your database alias. This name will be used for the System Properties exposed to the application with the database configuration details.
 
 (if you don't want a DB, skip the last 2 lines, of course!)
 
@@ -16,15 +18,15 @@ Here, we simply create a new application and database on CloudBees.
 If you are using CloudBees DBs, you will need to change your database 
 configuration in conf/application.conf to the following (the ALIAS part
 will always be upper case, and refers to the ALIAS specified with 
-bees app:bind, as described above)
+`bees app:bind`, as described above)
 
     db.default.driver=com.mysql.jdbc.Driver
-    db.default.url="jdbc:"${DATABASE_URL_ALIAS}
-    db.default.user=${DATABASE_USERNAME_ALIAS}
-    db.default.password=${DATABASE_PASSWORD_ALIAS}
+    db.default.url="jdbc:"${DATABASE_URL_MYDB}
+    db.default.user=${DATABASE_USERNAME_MYDB}
+    db.default.password=${DATABASE_PASSWORD_MYDB}
 
 
-The quotes must cover "jdbc:" and *not* the variable substitution part 
+The quotes must cover `"jdbc:"` and *not* the variable substitution part 
 (Or otherwise it won't be substituted.)
 
 We also need to get the MySQL driver. To do this, we change our 
