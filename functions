@@ -64,6 +64,12 @@ write_config() {
     echo "working=$app_dir/app" >> $_config
     echo "port=$app_port" >> $_config
     echo "java=$java" >> $_config
+    java_home="$(dirname $(dirname $java))"
+    echo "Using JAVA_HOME at $java_home"
+    echo "JAVA_HOME=\"$java_home\"" >> "$_config"
+    echo "genapp_dir=\"$genapp_dir\"" >> "$_config"
+    echo "app_dir=\"$app_dir\"" >> "$_config" 
+    
     echo "tmp_dir=$app_dir/tmp" >> $_config
     echo "working_dir=$working_dir" >> $_config
     echo "classpath=$classpath" >> $_config
@@ -72,4 +78,30 @@ write_config() {
 write_control() {
     echo "Writing control scripts to $control_dir"
     install -m 550 $plugin_dir/control/start $control_dir
+}
+
+install_jmx_invoker() {
+   cp $plugin_dir/lib/cloudbees-jmx-invoker-jar-with-dependencies.jar $genapp_dir/lib/
+   install -m 750 $plugin_dir/control/jmx_invoker $control_dir
+}
+
+install_jmxtrans_agent() {
+    # The jmxtrans agent takes care of metrics reporting 
+    # which can be accessed with the control script stats-appstat
+    echo "Installing jmxtrans agent"
+    _agent_jar_file="$plugin_dir/lib/jmxtrans-agent.jar"
+    _agent_jar_dest="$genapp_dir/lib/jmxtrans-agent.jar"
+    _agent_opts_file="$control_dir/java-opts-60-jmxtrans-agent"
+    _agent_config_file="$plugin_dir/conf/play2-metrics.xml"
+    _agent_config_file_dest="$app_dir/conf/play2-metrics.xml"
+    _agent_data_dest="$log_dir/play2-metrics.data"
+
+    mkdir -p $app_dir/conf
+    install -m 640 "$_agent_config_file" "$_agent_config_file_dest"
+    install -m 750 "$_agent_jar_file" "$_agent_jar_dest"
+
+    _java_opts="-javaagent:\"$_agent_jar_dest\"=\"$_agent_config_file_dest\""
+    _java_opts+=" -Dplay2_metrics_data_file=\"$_agent_data_dest\""
+
+    echo "$_java_opts" >> "$_agent_opts_file"
 }
